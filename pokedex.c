@@ -59,7 +59,8 @@ struct pokenode {
 
 
 // Add prototypes for any extra functions you create here.
-
+static int strLength (char *name);
+static void unknownName(int strLength);
 
 // You need to implement the following 20 functions.
 // In other words, replace the lines calling fprintf & exit with your code.
@@ -92,16 +93,19 @@ void add_pokemon(Pokedex pokedex, Pokemon pokemon) {
         curr->next = NULL;
         pokedex->select = curr;
         
+        curr->found = 0;
+        
     }
-    else {
+    else { 
         while (curr->next != NULL) {
             curr = curr->next;
         }
         struct pokenode *latest = curr->next;
         latest = malloc(sizeof(struct pokenode));
-    
+        curr->next = latest;
         latest->next = NULL;
         latest->pokemon = pokemon;
+        curr->found = 0;
     }
 }    
     
@@ -110,26 +114,30 @@ void add_pokemon(Pokedex pokedex, Pokemon pokemon) {
 
 
 void detail_pokemon(Pokedex pokedex) {
-    struct pokenode *curr = pokedex->select
-    struct pokenode *currPokemon = curr->pokemon            
-    if (curr->found != 1) {
-        printf("Id: %03d\n", pokemon_id(currPokemon));
+    struct pokenode *curr = pokedex->select;
+    //struct pokenode *currPokemon = curr->pokemon;
+    if (curr == NULL) {
+        fprintf(stderr, "Pokedex is empty\n");
+        exit(1);
+    }         
+    else if (curr->found != 1) {
+        printf("Id: %03d\n", pokemon_id(curr->pokemon));
         printf("Name: *********\n");
         printf("Height: --\n");
         printf("Weight: --\n");
         printf("Type: --\n");
-        break;
+        printf("\n");
     }
     else {
-        printf("Id: %03d\n", currPokemon->pokemon_id);
-        printf("Name:%s\n", char *pokemon_name(currPokemon));
-        printf("Height: %lf\n", double pokemon_height(currPokemon));
-        printf("Weight: %lf\n", double pokemon_weight(currPokemon));
-        printf("Type: %s ", const char *pokemon_type_to_string(pokemon_first_type(curr->pokemon)));
-        if (pokemon_second_type(currPokemon->type2) != NONE_TYPE) {
-            printf("%s", const char *pokemon_type_to_string(pokemon_first_type(curr->pokemon)));
-        }    
-        break; 
+        printf("Id: %03d\n", pokemon_id(curr->pokemon));
+        printf("Name:%s\n", pokemon_name(curr->pokemon));
+        printf("Height: %lf\n", pokemon_height(curr->pokemon));
+        printf("Weight: %lf\n", pokemon_weight(curr->pokemon));
+        printf("Type: %s ", pokemon_type_to_string(pokemon_first_type(curr->pokemon)));
+        if (pokemon_second_type(curr->pokemon) != NONE_TYPE) {
+            printf("%s", pokemon_type_to_string(pokemon_second_type(curr->pokemon)));
+        }
+        printf("\n");    
     }   
 }
 
@@ -139,28 +147,51 @@ Pokemon get_current_pokemon(Pokedex pokedex) {
         fprintf(stderr, "Pokedex is empty\n");
         exit(1);
     }
-    else if () {
-        return pokemon ;
+    else {
+        return curr->pokemon;
     }
 }
 
 void find_current_pokemon(Pokedex pokedex) {
     struct pokenode *curr = pokedex->select;
+    if (curr == NULL) {
+        fprintf(stderr, "Pokedex is empty\n");
+        exit(1);
+    }
     curr->found =  1;
 }
 
 void print_pokemon(Pokedex pokedex) {
     struct pokenode *curr = pokedex->head;
-    while (curr->next != NULL) {
+    if (curr == NULL) {
+        fprintf(stderr, "Pokedex is empty\n");
+        exit(1);
+    }
+    //prints the pokemon first in the list
+    /*if (curr->next == NULL) {
+       if (curr == pokedex->select) {
+            printf("-->");
+        }
+        printf("#%03d: ", pokemon_id(curr->pokemon));
+        if (curr->found != 1) {
+           unknownName(strLength(pokemon_name(curr->pokemon)));        
+        }
+        else {
+            printf("Name: %s\n", pokemon_name(curr->pokemon));
+        }
+    }*/
+    
+    while (curr != NULL) {
+        
         if (curr == pokedex->select) {
             printf("-->");
         }
-        printf("#%03d: ", currPokemon->pokemon_id);
+        printf("#%03d: ", pokemon_id(curr->pokemon));
         if (curr->found != 1) {
-        
+           unknownName(strLength(pokemon_name(curr->pokemon)));        
         }
         else {
-            printf("Name:%c\n", currPokemon->*name);
+            printf("Name: %s\n", pokemon_name(curr->pokemon));
         }
         curr = curr->next;
     }            
@@ -173,8 +204,7 @@ void print_pokemon(Pokedex pokedex) {
 void next_pokemon(Pokedex pokedex) {
     struct pokenode *curr = pokedex->head;
     curr = pokedex->head;  
-    while (curr->next != NULL) {
-         curr->current = 1; 
+     
 }
 
 void prev_pokemon(Pokedex pokedex) {
@@ -194,7 +224,7 @@ void remove_pokemon(Pokedex pokedex) {
 
 void destroy_pokedex(Pokedex pokedex) {
     fprintf(stderr, "exiting because you have not implemented the destroy_pokedex function in pokedex.c\n");
-    exit(1);
+    //exit(1);
 }
 
 ////////////////////////////////////////////////////////////////////////
@@ -255,4 +285,21 @@ Pokedex search_pokemon(Pokedex pokedex, char *text) {
 }
 
 // Add definitions for your own functions below.
+static int strLength (char *name) {
+    int i = 0;
+    while (name[i] != '\0') {
+        i++;
+    }
+    return i; 
+}
+
+static void unknownName(int strLength) {
+    int i = 0;
+    while (i < strLength) {
+        printf("*");
+        i++;
+    }
+    printf("\n");
+}
+
 // Make them static to limit their scope to this file.
