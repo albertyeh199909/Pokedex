@@ -167,12 +167,11 @@ void find_current_pokemon(Pokedex pokedex) {
 
 void print_pokemon(Pokedex pokedex) {
     struct pokenode *curr = pokedex->head;
-    /*if (curr == NULL) {
-        fprintf(stderr, "Pokedex is empty\n");
-        exit(1);
+    if (curr == NULL) {
+        return;
     }
-    //prints the pokemon first in the list
-    if (curr->next == NULL) {
+    
+    /*if (curr->next == NULL) {
        if (curr == pokedex->select) {
             printf("-->");
         }
@@ -197,7 +196,7 @@ void print_pokemon(Pokedex pokedex) {
         if (curr->found != 1) {
             unknownName(strLength(pokemon_name(curr->pokemon)));        
         }
-        else {
+        else if (curr->found == 1) {
             printf("%s\n", pokemon_name(curr->pokemon));
         }
         curr = curr->next;
@@ -302,7 +301,8 @@ void go_exploring(Pokedex pokedex, int seed, int factor, int how_many) {
         while (current != NULL) {
             if (pokemon_id(current->pokemon) == to_find) {
                 pokemonFound = pokemonFound + 1;
-                current->found = 1; 
+                current->found = 1;
+                printf("%d",current->found); 
                   
             }
             current = current->next;
@@ -464,8 +464,14 @@ Pokedex get_pokemon_of_type(Pokedex pokedex, pokemon_type type) {
             if (pokemon_first_type(curr->pokemon) == type || pokemon_second_type(curr->pokemon) ==type) {
                 Pokemon clone = clone_pokemon(curr->pokemon);
                 add_pokemon(type_pokedex, clone);
+                
             }
         }
+        curr = curr->next;
+    }
+    curr = type_pokedex->head;
+    while (curr != NULL) {
+        curr->found = 1;
         curr = curr->next;
     }
     return type_pokedex;
@@ -473,20 +479,87 @@ Pokedex get_pokemon_of_type(Pokedex pokedex, pokemon_type type) {
 }
 
 Pokedex get_found_pokemon(Pokedex pokedex) {
-    /*Pokedex found_pokedex = new_pokedex();
-    struct pokenode *curr = pokedex->head; 
-    if (curr == NULL) {
-        return;
+    Pokedex found_pokedex = new_pokedex();
+    struct pokenode *current = pokedex->head;
+    while (current != NULL) {
+        if (current->found == 1) {
+            Pokemon clone = clone_pokemon(current->pokemon); 
+            
+            struct pokenode *curr = found_pokedex->head;
+            
+            if (found_pokedex->head == NULL) {
+                curr = malloc(sizeof(struct pokenode));
+                found_pokedex->head = curr;
+                curr->pokemon = clone;
+                curr->next = NULL;
+                curr->prev = NULL;
+                curr->evolution = NULL;
+                found_pokedex->select = found_pokedex->head;     
+            }
+        
+            else {
+                
+                if (pokemon_id(clone) > pokemon_id(curr->pokemon)) {
+                    while (curr->next != NULL) {
+                        curr = curr->next;
+                    } 
+                    if (curr->next == NULL && pokemon_id(clone) > pokemon_id(curr->pokemon)) {
+                        curr->next = malloc(sizeof(struct pokenode));
+                        curr->next->pokemon = clone;
+                        curr->next->prev = curr;
+                        curr->next->next = NULL;
+                        curr->next->evolution = NULL;
+                    }
+                    else {
+                        curr = found_pokedex->head;
+                        while (curr->next != NULL && pokemon_id(clone) > pokemon_id(curr->pokemon)) {
+                            struct pokenode *tmp = curr->next;
+                            curr->next = malloc(sizeof(struct pokenode));
+                            curr->next->pokemon = clone;
+                            curr->next->prev = curr;
+                            curr->next->next = tmp;
+                            tmp->prev = curr->next;
+                            curr->next->evolution = NULL;
+                            curr = tmp;
+                        }
+                    }
+                }
+                curr = found_pokedex->head;
+                if (pokemon_id(clone) < pokemon_id(curr->pokemon)) {
+                    while (curr->prev != NULL) {
+                        curr = curr->prev;
+                    } 
+                    if (curr->prev == NULL && pokemon_id(clone) < pokemon_id(curr->pokemon)) {
+                        curr->prev = malloc(sizeof(struct pokenode));
+                        curr->prev->pokemon = clone;
+                        curr->prev->next = curr;
+                        curr->prev->prev = NULL;
+                    }
+                    else {
+                        curr = found_pokedex->head;
+                        while (curr->prev != NULL && pokemon_id(clone) < pokemon_id(curr->pokemon)) {
+                            struct pokenode *tmp = curr->prev;
+                            curr->prev = malloc(sizeof(struct pokenode));
+                            curr->prev->pokemon = clone;
+                            curr->prev->next = curr; 
+                            curr->prev->prev = tmp;
+                            tmp->next = curr->prev;
+                            curr->prev->evolution = NULL;
+                            curr = tmp;
+                        }
+                    }
+                      
+                }
+            }
+        } 
+        current = current->next;       
     }
-    while (curr != NULL) {
-        if (curr->found == 1) {
-            Pokemon clone = clone_pokemon(curr->pokemon); 
-        }
-        add_pokemon(type_pokedex, clone);
-        curr = curr->next;
-    } */
-    fprintf(stderr, "exiting because you have not implemented the search_pokemon function in pokedex.c\n");
-    exit(1);  
+    struct pokenode *pointer = found_pokedex->head;
+    while (pointer != NULL) {
+        pointer->found = 1;
+        pointer = pointer->next;
+    }
+    return found_pokedex;   
 }
 
 Pokedex search_pokemon(Pokedex pokedex, char *text) {
