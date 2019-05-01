@@ -84,12 +84,6 @@ Pokedex new_pokedex(void) {
 //                         Stage 1 Functions                          //
 ////////////////////////////////////////////////////////////////////////
 
-//print name
-//general code
-//pokemon type print
-//fields in struct
-
-//clean code
 void add_pokemon(Pokedex pokedex, Pokemon pokemon) {
     struct pokenode *curr = pokedex->head;
     if (pokedex->head == NULL) {
@@ -367,15 +361,6 @@ void show_evolutions(Pokedex pokedex) {
     if (curr == NULL) {
         return;
     }
-    /*if (curr->evolution == NULL) {
-        if (select->found == 0) {
-            print_unknown_evolution(curr);
-        }
-        else {
-            print_evolution(curr);
-        }
-    }*/
-
     if (curr->found != 1) {
         print_unknown_evolution(curr);
     }

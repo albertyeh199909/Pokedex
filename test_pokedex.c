@@ -43,6 +43,7 @@ static void test_new_pokedex(void);
 static void test_add_pokemon(void);
 static void test_get_found_pokemon(void);
 static void test_next_pokemon(void);
+static  void test_add_pokemon_evolution(void);
 
 // Helper functions for creating/comparing Pokemon.
 static Pokemon create_bulbasaur(void);
@@ -60,6 +61,7 @@ int main(int argc, char *argv[]) {
     test_add_pokemon();
     test_next_pokemon();
     test_get_found_pokemon();
+    test_add_pokemon_evolution();
 
     printf("\nAll Pokedex tests passed, you are Awesome!\n");
 }
@@ -124,7 +126,21 @@ static void test_add_pokemon(void) {
     printf("    ... Adding ivysaur to the Pokedex\n");
     add_pokemon(pokedex, ivysaur);
     
+    printf("       --> Checking that the current Pokemon is Bulbasaur\n");
     assert(get_current_pokemon(pokedex) == bulbasaur);
+    
+    printf("    ...Checking total pokemon\n");
+    assert(count_total_pokemon(pokedex) == 2);
+    
+    printf("    ...Removing Bulbasaur from Pokedex\n");
+    remove_pokemon(pokedex);
+    
+    printf("       --> Checking that the current Pokemon is Ivysaur\n");
+    assert(get_current_pokemon(pokedex) == ivysaur);
+    
+    printf("    ...Checking total pokemon\n");
+    assert(count_total_pokemon(pokedex) == 1);
+    
    
     printf("    ... Destroying the Pokedex\n");
     destroy_pokedex(pokedex);
@@ -170,6 +186,9 @@ static void test_next_pokemon(void) {
 
     printf("       --> Checking that the current Pokemon is Ivysaur\n");
     assert(same_pokemon(get_current_pokemon(pokedex), ivysaur));
+    
+    
+    
 
     printf("    ... Destroying the Pokedex\n");
     destroy_pokedex(pokedex);
@@ -200,7 +219,7 @@ static void test_next_pokemon(void) {
 //   - ... and more!
 static void test_get_found_pokemon(void) {
     printf("\n>> Testing get_found_pokemon\n");
-
+    
     printf("    ... Creating a new Pokedex\n");
     Pokedex pokedex = new_pokedex();
 
@@ -211,6 +230,12 @@ static void test_get_found_pokemon(void) {
     printf("    ... Adding Bulbasaur and Ivysaur to the Pokedex\n");
     add_pokemon(pokedex, bulbasaur);
     add_pokemon(pokedex, ivysaur);
+    
+    printf("    ... Getting all found Pokemon\n");
+    Pokedex found_pokedex = get_found_pokemon(pokedex);
+    
+    printf("    ... Checking if found_pokedex is empty\n");
+    assert(count_total_pokemon(found_pokedex) == 0);
 
     printf("       --> Checking that the current Pokemon is Bulbasaur\n");
     assert(get_current_pokemon(pokedex) == bulbasaur);
@@ -219,7 +244,7 @@ static void test_get_found_pokemon(void) {
     find_current_pokemon(pokedex);
 
     printf("    ... Getting all found Pokemon\n");
-    Pokedex found_pokedex = get_found_pokemon(pokedex);
+    found_pokedex = get_found_pokemon(pokedex);
 
     printf("       --> Checking the correct Pokemon were returned\n");
     assert(count_total_pokemon(found_pokedex) == 1);
@@ -235,7 +260,31 @@ static void test_get_found_pokemon(void) {
 
 
 // Write your own Pokedex tests here!
+static  void test_add_pokemon_evolution(void) {
+    printf("    ... Creating a new Pokedex\n");
+    Pokedex pokedex = new_pokedex();
 
+    printf("    ... Creating Bulbasaur and Ivysaur\n");
+    Pokemon bulbasaur = create_bulbasaur();
+    Pokemon ivysaur = create_ivysaur();
+
+    printf("    ... Adding Bulbasaur and Ivysaur to the Pokedex\n");
+    add_pokemon(pokedex, bulbasaur);
+    add_pokemon(pokedex, ivysaur);
+    
+    printf("   ...Bulbasaur evolve into Ivysaur\n");
+    add_pokemon_evolution(pokedex, 1, 2);
+    
+    printf("   ...Check if evolved\n");
+    assert(get_next_evolution(pokedex) == 2);
+    
+    printf("    ... Destroying the Pokedex\n");
+    destroy_pokedex(pokedex);
+
+    printf(">> Passed next_pokemon tests!\n");
+} 
+
+get_pokemon_of_type   
 
 ////////////////////////////////////////////////////////////////////////
 //                     Helper Functions                               //
@@ -277,3 +326,4 @@ static int same_pokemon(Pokemon first, Pokemon second) {
 }
 
 // Write your own helper functions here!
+
