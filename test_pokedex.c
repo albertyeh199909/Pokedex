@@ -117,7 +117,15 @@ static void test_add_pokemon(void) {
 
     printf("    ... Adding Bulbasaur to the Pokedex\n");
     add_pokemon(pokedex, bulbasaur);
-
+    
+    printf("    ... Creating Ivysaur\n");
+    Pokemon ivysaur = create_ivysaur();
+    
+    printf("    ... Adding ivysaur to the Pokedex\n");
+    add_pokemon(pokedex, ivysaur);
+    
+    assert(get_current_pokemon(pokedex) == bulbasaur);
+   
     printf("    ... Destroying the Pokedex\n");
     destroy_pokedex(pokedex);
 

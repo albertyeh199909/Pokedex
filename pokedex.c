@@ -171,19 +171,6 @@ void print_pokemon(Pokedex pokedex) {
         return;
     }
     
-    /*if (curr->next == NULL) {
-       if (curr == pokedex->select) {
-            printf("-->");
-        }
-        printf("#%03d: ", pokemon_id(curr->pokemon));
-        if (curr->found != 1) {
-           unknownName(strLength(pokemon_name(curr->pokemon)));        
-        }
-        else {
-            printf("Name: %s\n", pokemon_name(curr->pokemon));
-        }
-    }*/
-    
     while (curr != NULL) {
         
         if (curr == pokedex->select) {
@@ -404,30 +391,9 @@ void show_evolutions(Pokedex pokedex) {
             printf(" --> ");
             print_evolution(curr->evolution);  
         }
-        //printf("%d %d\n", pokemon_id(curr->pokemon), pokemon_id(curr->evolution->pokemon));
         curr = curr->evolution;
     }    
-    /*if (curr->evolution != NULL) {
-        if (curr->evolution->found != 1) {
-            printf(" --> ");
-            print_unknown_evolution(curr->evolution);
-        }
-        else if (curr->evolution->found == 1) {
-            printf(" --> ");
-            print_evolution(curr->evolution);  
-        }
-        //prints third evolution
-        if (curr->evolution->evolution != NULL) {
-            if (curr->evolution->evolution->found != 1) {
-                printf(" --> ");
-                print_unknown_evolution(curr->evolution->evolution);
-            }
-            else if (curr->evolution->evolution->found == 1) {
-                printf(" --> ");
-                print_evolution(curr->evolution->evolution);  
-            }
-        }       
-    }*/
+
     printf("\n");
                     
     
@@ -486,7 +452,7 @@ Pokedex get_found_pokemon(Pokedex pokedex) {
             Pokemon clone = clone_pokemon(current->pokemon); 
             
             struct pokenode *curr = found_pokedex->head;
-            
+            //inserts the first element in new list
             if (found_pokedex->head == NULL) {
                 curr = malloc(sizeof(struct pokenode));
                 found_pokedex->head = curr;
@@ -498,7 +464,7 @@ Pokedex get_found_pokemon(Pokedex pokedex) {
             }
         
             else {
-                
+                //inserts element with ID greater than first element
                 if (pokemon_id(clone) > pokemon_id(curr->pokemon)) {
                     while (curr->next != NULL) {
                         curr = curr->next;
@@ -524,31 +490,17 @@ Pokedex get_found_pokemon(Pokedex pokedex) {
                         }
                     }
                 }
+                //inserts element with ID less than first element
                 curr = found_pokedex->head;
                 if (pokemon_id(clone) < pokemon_id(curr->pokemon)) {
-                    while (curr->prev != NULL) {
-                        curr = curr->prev;
-                    } 
-                    if (curr->prev == NULL && pokemon_id(clone) < pokemon_id(curr->pokemon)) {
-                        curr->prev = malloc(sizeof(struct pokenode));
-                        curr->prev->pokemon = clone;
-                        curr->prev->next = curr;
-                        curr->prev->prev = NULL;
-                    }
-                    else {
-                        curr = found_pokedex->head;
-                        while (curr->prev != NULL && pokemon_id(clone) < pokemon_id(curr->pokemon)) {
-                            struct pokenode *tmp = curr->prev;
-                            curr->prev = malloc(sizeof(struct pokenode));
-                            curr->prev->pokemon = clone;
-                            curr->prev->next = curr; 
-                            curr->prev->prev = tmp;
-                            tmp->next = curr->prev;
-                            curr->prev->evolution = NULL;
-                            curr = tmp;
-                        }
-                    }
-                      
+                    printf("working %s\n", pokemon_name(clone));
+                    curr->prev = malloc(sizeof(struct pokenode));
+                    curr->prev->pokemon = clone;
+                    curr->prev->next = curr;
+                    curr->prev->prev = NULL;
+                    found_pokedex->head = curr->prev;
+                    found_pokedex->select = found_pokedex->head;
+ 
                 }
             }
         } 
@@ -563,8 +515,25 @@ Pokedex get_found_pokemon(Pokedex pokedex) {
 }
 
 Pokedex search_pokemon(Pokedex pokedex, char *text) {
-    fprintf(stderr, "exiting because you have not implemented the search_pokemon function in pokedex.c\n");
-    exit(1);
+    /*Pokedex search_pokedex = new_pokedex();
+    struct pokenode *curr = pokedex->head;
+    while (curr != NULL) {
+        if (curr->found == 1) {
+            if (pokemon_first_type(curr->pokemon) == type || pokemon_second_type(curr->pokemon) ==type) {
+                Pokemon clone = clone_pokemon(curr->pokemon);
+                add_pokemon(search_pokedex, clone);
+            }
+        }
+        curr = curr->next;
+    }
+    curr = search_pokedex->head;
+    while (curr != NULL) {
+        curr->found = 1;
+        curr = curr->next;
+    }
+    return search_pokedex;
+    */
+    exit(1);    
 }
 
 // Add definitions for your own functions below.
@@ -611,4 +580,23 @@ static void destroy_node(struct pokenode *n) {
     destroy_pokemon(n->pokemon);
     free(n);
 }
+/*static int strings_equal(char *string1, char *string2, int strLength) {
+    int search = 0
+    int i = 0;
+    int x = 0;
+    while (string1[i] != '\0') {
+        if (string1[i] == string2[x]) {
+            x = x + 1;
+        }
+        if (x == strLength) {
+            search = 1;
+        }
+        if (string1[i] != string2[x]) {
+            x = 0;
+        }
+        i = i + 1;
+        
+    }            
+    return search;
+}*/
 // Make them static to limit their scope to this file.
